@@ -233,12 +233,16 @@ def draw_boxes(image_, boxes, labels):
         draw.rectangle(
             [tuple(text_origin), tuple(text_origin + label_size)],
             fill=colors[c])
-        print(predicted_class)
+        
         if predicted_class == "cell phone":
-            print("hi")
             object_actual_height_mm = 150
+
         elif predicted_class == "person":
             object_actual_height_mm = 1750
+
+        elif predicted_class == "car":
+            object_actual_height_mm = 1680
+
         else:
             object_actual_height_mm = 0
 
