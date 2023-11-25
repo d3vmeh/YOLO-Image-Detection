@@ -61,7 +61,7 @@ nms_threshold = 0.45
 
 #Drawing bounding boxes
 annotated_image = detect_image(image_pil,obj_thresh=obj_threshold,nms_thresh=nms_threshold)
-annotated_image.save("resultant_image.jpg")
+annotated_image.save("resultant_images/resultant_image.jpg")
 plt.figure(figsize=(12,12))
-plt.imshow(annotated_image)
-plt.show()
+#plt.imshow(annotated_image)
+#plt.show()

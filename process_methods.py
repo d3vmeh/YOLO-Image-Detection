@@ -219,7 +219,7 @@ def draw_boxes(image_, boxes, labels):
         left = max(0, np.floor(left + 0.5).astype('int32'))
         bottom = min(image_h, np.floor(bottom + 0.5).astype('int32'))
         right = min(image_w, np.floor(right + 0.5).astype('int32'))
-        print(label, (left, top), (right, bottom))
+        #print(label, (left, top), (right, bottom))
 
         if top - label_size[1] >= 0:
             text_origin = np.array([left, top - label_size[1]])
@@ -227,9 +227,10 @@ def draw_boxes(image_, boxes, labels):
             text_origin = np.array([left, top + 1])
 
         for i in range(thickness):
-            draw.rectangle(
-                [left + i, top + i, right - i, bottom - i],
-                outline=colors[c])
+            if (right-i)>=(left+i) and (bottom-i)>=(top+i):
+                draw.rectangle(
+                    [left + i, top + i, right - i, bottom - i],
+                    outline=colors[c])
         draw.rectangle(
             [tuple(text_origin), tuple(text_origin + label_size)],
             fill=colors[c])
