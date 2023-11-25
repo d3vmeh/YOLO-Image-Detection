@@ -3,10 +3,6 @@ from ImageDetection import detect_image, darknet, anchors, labels
 import cv2
 
 
-
-
-import cv2
-
 def detect_video(video_path, output_path, obj_thresh = 0.5, nms_thresh = 0.3, darknet=darknet, net_h=416, net_w=416, anchors=anchors, labels=labels):
     vid = cv2.VideoCapture(video_path)
     if not vid.isOpened():

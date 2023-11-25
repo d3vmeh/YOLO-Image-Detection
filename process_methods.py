@@ -209,7 +209,6 @@ def draw_boxes(image_, boxes, labels):
         predicted_class = labels[c]
         score = box.get_score()
         top, left, bottom, right = box.ymin, box.xmin, box.ymax, box.xmax
-
         label = '{} {:.2f}'.format(predicted_class, score)
         draw = ImageDraw.Draw(image)
         label_size = draw.textbbox((0,0),label, font)
@@ -234,6 +233,26 @@ def draw_boxes(image_, boxes, labels):
         draw.rectangle(
             [tuple(text_origin), tuple(text_origin + label_size)],
             fill=colors[c])
-        draw.text(text_origin, label, fill=(0, 0, 0), font=font)
+        print(predicted_class)
+        if predicted_class == "cell phone":
+            print("hi")
+            object_actual_height_mm = 150
+        elif predicted_class == "person":
+            object_actual_height_mm = 1750
+        else:
+            object_actual_height_mm = 0
+
+        distance = get_distance_from_height(50,object_actual_height_mm,(bottom-i)-(top+i), image_h, image_w)
+        
+        
+        
+        draw.text(text_origin, label+" "+str(distance)+"mm", fill=(0, 0, 0), font=font)
         del draw
     return image
+
+#0.111mm is the size of each pixel for mac camera
+def get_distance_from_height(focal_length, object_actual_height_mm, object_height_pixels,
+                             frame_height, frame_width, 
+                             sensor_height=0.111*1080, sensor_width = 0.111*1920):
+    distance = (focal_length*frame_height*object_actual_height_mm)/(object_height_pixels*sensor_height)
+    return distance
