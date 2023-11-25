@@ -3,5 +3,8 @@ yolo_weights.h5
 images/
 videos/
 LiberationMono-Regular.ttf
+__pycache__/
 resultant_images/
 resultant_videos/
+__pycache__/ImageDetection.cpython-38.pyc
+__pycache__/process_methods.cpython-38.pyc

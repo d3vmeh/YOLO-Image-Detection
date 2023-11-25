@@ -43,7 +43,7 @@ print(len(yolo_outputs), yolo_outputs[0].shape, yolo_outputs[1].shape, yolo_outp
 anchors = [[[116,90], [156,198], [373,326]], [[30,61], [62,45], [59,119]], [[10,13], [16,30], [33,23]]]
 
 
-def detect_image(image_pil, obj_thresh = 0.4, nms_thresh = 0.45, darknet=darknet, net_h=416, net_w=416, anchors=anchors, labels=labels):
+def detect_image(image_pil, obj_thresh = 0.4, nms_thresh = 0.45, darknet=darknet, net_h=416, net_w=416, anchors=anchors, labels=labels, camera = None):
   new_image = preprocess_input(image_pil, net_h, net_w)
 
 
@@ -52,7 +52,7 @@ def detect_image(image_pil, obj_thresh = 0.4, nms_thresh = 0.45, darknet=darknet
 
   boxes = decode_netout(yolo_outputs, obj_thresh, anchors, image_pil.size[1], image_pil.size[0], net_h, net_w) #width and height are swapped here
   boxes = do_nms(boxes, nms_thresh, obj_thresh)
-  return draw_boxes(image_pil, boxes, labels)
+  return draw_boxes(image_pil, boxes, labels, camera=camera)
 
 
 #Values to tune

@@ -4,6 +4,13 @@ import cv2
 from copy import deepcopy
 
 
+class Camera:
+    def __init__(self, focal_length, sensor_height, sensor_width):
+        self.focal_length = focal_length
+        self.sensor_height = sensor_height
+        self.sensor_width = sensor_width
+
+
 class BoundBox:
     def __init__(self, xmin, ymin, xmax, ymax, objness = None, classes = None):
         self.xmin = xmin
@@ -187,7 +194,7 @@ def do_nms(boxes_, nms_thresh, obj_thresh):
 from PIL import ImageDraw, ImageFont
 import colorsys
 
-def draw_boxes(image_, boxes, labels):
+def draw_boxes(image_, boxes, labels, camera = None):
     image = image_.copy()
     image_w, image_h = image.size
     font = ImageFont.truetype(font='LiberationMono-Regular.ttf',
@@ -258,19 +265,18 @@ def draw_boxes(image_, boxes, labels):
             
             
             """
-        
-            distance = get_distance_from_height(50,object_actual_height_mm,box.ymax-box.ymin, image_h, image_w)
-            
-            
+            print(image_h)
+            distance = 0
+            if camera != None:
+                distance = get_distance_from_height(camera, object_actual_height_mm, box.ymax-box.ymin, image_h, image_w)            
             
             draw.text(text_origin, label+" "+str(distance)+"mm", fill=(0, 0, 0), font=font)
             del draw
     return image
 
 #0.111mm is the size of each pixel for mac camera
-def get_distance_from_height(focal_length, object_actual_height_mm, object_height_pixels,
-                             frame_height, frame_width, 
-                             sensor_height=0.111*1080, sensor_width = 0.111*1920):
-    distance = (focal_length*frame_height*object_actual_height_mm)/(object_height_pixels*sensor_height)
+def get_distance_from_height(camera, object_actual_height_mm, object_height_pixels,
+                             frame_height, frame_width):
+    distance = (camera.focal_length*frame_height*object_actual_height_mm)/(object_height_pixels*camera.sensor_height)
     return distance
 
