@@ -218,7 +218,7 @@ def draw_boxes(image_, boxes, labels, camera = None):
             top, left, bottom, right = box.ymin, box.xmin, box.ymax, box.xmax
             label = '{} {:.2f}'.format(predicted_class, score)
             draw = ImageDraw.Draw(image)
-            label_size = draw.textbbox((0,0),label, font)
+            label_size = draw.textbbox((0,0),label+"         ", font)
             label_size = (label_size[2], label_size[3])
 
             top = max(0, np.floor(top + 0.5).astype('int32'))
@@ -270,7 +270,7 @@ def draw_boxes(image_, boxes, labels, camera = None):
             if camera != None:
                 distance = get_distance_from_height(camera, object_actual_height_mm, box.ymax-box.ymin, image_h, image_w)            
             
-            draw.text(text_origin, label+" "+str(distance)+"mm", fill=(0, 0, 0), font=font)
+            draw.text(text_origin, label+" "+str(distance*0.0393701)[:3]+"in", fill=(0, 0, 0), font=font)
             del draw
     return image
 
