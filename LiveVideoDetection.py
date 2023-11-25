@@ -1,5 +1,5 @@
 from process_methods import *
-from ImageDetection import detect_image, darknet, anchors, labels 
+from ImageDetection import detect_image 
 import cv2
 
 vid = cv2.VideoCapture(0)

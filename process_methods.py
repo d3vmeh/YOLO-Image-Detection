@@ -203,55 +203,68 @@ def draw_boxes(image_, boxes, labels):
     np.random.seed(10101)  # Fixed seed for consistent colors across runs.
     np.random.shuffle(colors)  # Shuffle colors to decorrelate adjacent classes.
     np.random.seed(None)  # Reset seed to default.
+    if boxes != None:
+        for i, box in reversed(list(enumerate(boxes))):
+            c = box.get_label()
+            predicted_class = labels[c]
+            score = box.get_score()
+            top, left, bottom, right = box.ymin, box.xmin, box.ymax, box.xmax
+            label = '{} {:.2f}'.format(predicted_class, score)
+            draw = ImageDraw.Draw(image)
+            label_size = draw.textbbox((0,0),label, font)
+            label_size = (label_size[2], label_size[3])
 
-    for i, box in reversed(list(enumerate(boxes))):
-        c = box.get_label()
-        predicted_class = labels[c]
-        score = box.get_score()
-        top, left, bottom, right = box.ymin, box.xmin, box.ymax, box.xmax
-        label = '{} {:.2f}'.format(predicted_class, score)
-        draw = ImageDraw.Draw(image)
-        label_size = draw.textbbox((0,0),label, font)
-        label_size = (label_size[2], label_size[3])
+            top = max(0, np.floor(top + 0.5).astype('int32'))
+            left = max(0, np.floor(left + 0.5).astype('int32'))
+            bottom = min(image_h, np.floor(bottom + 0.5).astype('int32'))
+            right = min(image_w, np.floor(right + 0.5).astype('int32'))
+            #print(label, (left, top), (right, bottom))
 
-        top = max(0, np.floor(top + 0.5).astype('int32'))
-        left = max(0, np.floor(left + 0.5).astype('int32'))
-        bottom = min(image_h, np.floor(bottom + 0.5).astype('int32'))
-        right = min(image_w, np.floor(right + 0.5).astype('int32'))
-        #print(label, (left, top), (right, bottom))
+            if top - label_size[1] >= 0:
+                text_origin = np.array([left, top - label_size[1]])
+            else:
+                text_origin = np.array([left, top + 1])
 
-        if top - label_size[1] >= 0:
-            text_origin = np.array([left, top - label_size[1]])
-        else:
-            text_origin = np.array([left, top + 1])
+            for i in range(thickness):
+                if (right-i)>=(left+i) and (bottom-i)>=(top+i):
+                    draw.rectangle(
+                        [left + i, top + i, right - i, bottom - i],
+                        outline=colors[c])
+            draw.rectangle(
+                [tuple(text_origin), tuple(text_origin + label_size)],
+                fill=colors[c])
+            
+            if predicted_class == "cell phone":
+                object_actual_height_mm = 150
 
-        for i in range(thickness):
-            if (right-i)>=(left+i) and (bottom-i)>=(top+i):
-                draw.rectangle(
-                    [left + i, top + i, right - i, bottom - i],
-                    outline=colors[c])
-        draw.rectangle(
-            [tuple(text_origin), tuple(text_origin + label_size)],
-            fill=colors[c])
+            elif predicted_class == "person":
+                object_actual_height_mm = 1750
+
+            elif predicted_class == "car":
+                object_actual_height_mm = 1680
+
+            else:
+                object_actual_height_mm = 0
+            
+            """
+            For Logitech C290 Pro Webcam:
+
+                Resolution (pixel): 1920x1080
+                Focal Length (mm): 3.67mm
+                Pixel Size (µm): 3.98
+                Sensor Size (inches): 1/2.88
+                Object real height (mm): 180
+                Object image height (px): 370
+            
+            
+            """
         
-        if predicted_class == "cell phone":
-            object_actual_height_mm = 150
-
-        elif predicted_class == "person":
-            object_actual_height_mm = 1750
-
-        elif predicted_class == "car":
-            object_actual_height_mm = 1680
-
-        else:
-            object_actual_height_mm = 0
-
-        distance = get_distance_from_height(50,object_actual_height_mm,(bottom-i)-(top+i), image_h, image_w)
-        
-        
-        
-        draw.text(text_origin, label+" "+str(distance)+"mm", fill=(0, 0, 0), font=font)
-        del draw
+            distance = get_distance_from_height(50,object_actual_height_mm,box.ymax-box.ymin, image_h, image_w)
+            
+            
+            
+            draw.text(text_origin, label+" "+str(distance)+"mm", fill=(0, 0, 0), font=font)
+            del draw
     return image
 
 #0.111mm is the size of each pixel for mac camera
@@ -260,3 +273,4 @@ def get_distance_from_height(focal_length, object_actual_height_mm, object_heigh
                              sensor_height=0.111*1080, sensor_width = 0.111*1920):
     distance = (focal_length*frame_height*object_actual_height_mm)/(object_height_pixels*sensor_height)
     return distance
+
