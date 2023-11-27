@@ -6,6 +6,7 @@ vid = cv2.VideoCapture(0)
 
 macbook_camera = Camera(50, 0.111*1080, 0.111*1920)
 logitech_webcam = Camera(3.67, 3.6, 4.8)
+phone_camera = Camera(4, 3024 * 1.4, 4042 * 1.4)
 
 while True:
 

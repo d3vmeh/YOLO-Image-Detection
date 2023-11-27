@@ -2,6 +2,7 @@ from process_methods import *
 from ImageDetection import detect_image, darknet, anchors, labels
 import cv2
 
+logitech_webcam = Camera(3.67, 3.6, 4.8)
 
 def detect_video(video_path, output_path, obj_thresh = 0.5, nms_thresh = 0.3, darknet=darknet, net_h=416, net_w=416, anchors=anchors, labels=labels):
     vid = cv2.VideoCapture(video_path)
@@ -19,16 +20,11 @@ def detect_video(video_path, output_path, obj_thresh = 0.5, nms_thresh = 0.3, da
     while vid.isOpened():
       ret, frame = vid.read()
       num_frame += 1
-      #print("Frame {} ".format(num_frame))
-      if (num_frame == 10000 or num_frame == 30000):
-          print("hi")
       if ret:
-          ### YOUR CODE HERE
           new_frame = frame
           image_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-          image_pil = detect_image(image_pil)
+          image_pil = detect_image(image_pil, camera=logitech_webcam)
           new_frame = cv2.cvtColor(np.asarray(image_pil), cv2.COLOR_RGB2BGR)
-          ### END CODE
           out.write(new_frame)
       else:
           break
@@ -36,6 +32,6 @@ def detect_video(video_path, output_path, obj_thresh = 0.5, nms_thresh = 0.3, da
     out.release()
 
 
-video_path = 'videos/NYCvideo.mp4'
-output_path = 'resultant_videos/resultant_video3.mp4'
+video_path = 'videos/NYC.mp4'
+output_path = 'resultant_videos/resultant_video5.mp4'
 detect_video(video_path, output_path)

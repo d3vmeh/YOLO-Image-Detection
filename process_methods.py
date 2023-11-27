@@ -3,14 +3,6 @@ import numpy as np
 import cv2
 from copy import deepcopy
 
-
-class Camera:
-    def __init__(self, focal_length, sensor_height, sensor_width):
-        self.focal_length = focal_length
-        self.sensor_height = sensor_height
-        self.sensor_width = sensor_width
-
-
 class BoundBox:
     def __init__(self, xmin, ymin, xmax, ymax, objness = None, classes = None):
         self.xmin = xmin
@@ -241,6 +233,7 @@ def draw_boxes(image_, boxes, labels, camera = None):
                 [tuple(text_origin), tuple(text_origin + label_size)],
                 fill=colors[c])
             
+            #For now, only a few objects need to be identified
             if predicted_class == "cell phone":
                 object_actual_height_mm = 150
 
@@ -250,6 +243,13 @@ def draw_boxes(image_, boxes, labels, camera = None):
             elif predicted_class == "car":
                 object_actual_height_mm = 1680
 
+            elif predicted_class == "truck":
+                object_actual_height_mm = 4118
+                
+            elif predicted_class == "traffic light":
+                object_actual_height_mm = 762
+            
+            
             else:
                 object_actual_height_mm = 0
             
@@ -265,7 +265,6 @@ def draw_boxes(image_, boxes, labels, camera = None):
             
             
             """
-            print(image_h)
             distance = 0
             if camera != None:
                 distance = get_distance_from_height(camera, object_actual_height_mm, box.ymax-box.ymin, image_h, image_w)            
@@ -274,7 +273,14 @@ def draw_boxes(image_, boxes, labels, camera = None):
             del draw
     return image
 
-#0.111mm is the size of each pixel for mac camera
+
+class Camera:
+    def __init__(self, focal_length, sensor_height, sensor_width):
+        self.focal_length = focal_length
+        self.sensor_height = sensor_height
+        self.sensor_width = sensor_width
+
+#Estimating distance from object's pixel height
 def get_distance_from_height(camera, object_actual_height_mm, object_height_pixels,
                              frame_height, frame_width):
     distance = (camera.focal_length*frame_height*object_actual_height_mm)/(object_height_pixels*camera.sensor_height)
