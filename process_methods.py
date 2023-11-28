@@ -249,7 +249,15 @@ def draw_boxes(image_, boxes, labels, camera = None):
             elif predicted_class == "traffic light":
                 object_actual_height_mm = 762
             
+            elif predicted_class == "bicycle":
+                object_actual_height_mm = 1050
             
+            elif predicted_class == "bus":
+                object_actual_height_mm = 4200
+            
+            elif predicted_class == "stop sign":
+                object_actual_height_mm = 2133
+
             else:
                 object_actual_height_mm = 0
             

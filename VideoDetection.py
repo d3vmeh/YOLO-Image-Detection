@@ -32,6 +32,6 @@ def detect_video(video_path, output_path, obj_thresh = 0.5, nms_thresh = 0.3, da
     out.release()
 
 
-video_path = 'videos/NYC.mp4'
-output_path = 'resultant_videos/resultant_video5.mp4'
+video_path = 'videos/NYCvideo.mp4'
+output_path = 'resultant_videos/resultant_video8.mp4'
 detect_video(video_path, output_path)
